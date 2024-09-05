@@ -76,6 +76,7 @@ func (c *MimirConverter) addSumNumberDataPoints(ctx context.Context, dataPoints 
 
 		pt := dataPoints.At(x)
 		startTimestampNs := pt.StartTimestamp()
+		startTimestampMs := convertTimeStamp(pt.StartTimestamp())
 		lbls := createAttributes(
 			resource,
 			pt.Attributes(),
@@ -100,7 +101,7 @@ func (c *MimirConverter) addSumNumberDataPoints(ctx context.Context, dataPoints 
 		}
 		isMonotonic := metric.Sum().IsMonotonic()
 		if isMonotonic {
-			c.handleStartTime(convertTimeStamp(startTimestampNs), timestamp, sample.Value, lbls, settings)
+			c.handleStartTime(startTimestampMs, timestamp, lbls, settings)
 		}
 		ts := c.addSample(sample, lbls)
 		if ts != nil {
@@ -125,7 +126,7 @@ func (c *MimirConverter) addSumNumberDataPoints(ctx context.Context, dataPoints 
 					break
 				}
 			}
-			c.addTimeSeriesIfNeeded(createdLabels, startTimestampNs, pt.Timestamp())
+			c.addTimeSeriesIfNeeded(createdLabels, startTimestampMs, pt.Timestamp())
 		}
 	}
 
