@@ -584,14 +584,14 @@ func (c *PrometheusConverter) handleStartTime(startTs, ts int64, labels []prompb
 	}
 	// We want to ignore the write in three cases.
 	// - We've seen samples with the start timestamp set to epoch meaning it wasn't set by the sender so we skip those.
-	// - According to the spec if StartTimeUnixNano is set to 0, it means the start time is unknown. So dropping the sample too.
+	// - If StartTimestamp equals Timestamp ist means we don't know at which time the metric restarted according to the spec.
 	// - StartTimestamp can never be greater than the sample timestamp.
 	if startTs <= 0 || startTs == ts || startTs > ts {
 		return
 	}
 
 	// The difference between the start and the actual timestamp is more than a reasonable time, so we skip this sample.
-	if math.Abs(float64(startTs-ts)) > validIntervalForStartTimestamps {
+	if ts-startTs > validIntervalForStartTimestamps {
 		return
 	}
 

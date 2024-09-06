@@ -278,7 +278,7 @@ require (
 )
 
 // Using a fork of Prometheus with Mimir-specific changes.
-replace github.com/prometheus/prometheus => github.com/grafana/mimir-prometheus v0.0.0-20240905104348-e5a700c2a8a4
+replace github.com/prometheus/prometheus => github.com/grafana/mimir-prometheus v0.0.0-20240905143637-3741aae980f6
 
 // client_golang v1.20.0 has some bugs https://github.com/prometheus/client_golang/issues/1605, https://github.com/prometheus/client_golang/issues/1607
 // Stick to v1.19.1 until they are fixed.

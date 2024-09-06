@@ -20,6 +20,7 @@ import (
 	"context"
 	"math"
 
+	"github.com/go-kit/log"
 	"github.com/prometheus/common/model"
 	"go.opentelemetry.io/collector/pdata/pcommon"
 	"go.opentelemetry.io/collector/pdata/pmetric"
@@ -65,13 +66,14 @@ func (c *PrometheusConverter) addGaugeNumberDataPoints(ctx context.Context, data
 }
 
 func (c *PrometheusConverter) addSumNumberDataPoints(ctx context.Context, dataPoints pmetric.NumberDataPointSlice,
-	resource pcommon.Resource, metric pmetric.Metric, settings Settings, name string) error {
+	resource pcommon.Resource, metric pmetric.Metric, settings Settings, name string, logger log.Logger) error {
 	for x := 0; x < dataPoints.Len(); x++ {
 		if err := c.everyN.checkContext(ctx); err != nil {
 			return err
 		}
 
 		pt := dataPoints.At(x)
+		timestamp := convertTimeStamp(pt.Timestamp())
 		startTimestampNs := pt.StartTimestamp()
 		startTimestampMs := convertTimeStamp(pt.StartTimestamp())
 		lbls := createAttributes(
@@ -83,7 +85,7 @@ func (c *PrometheusConverter) addSumNumberDataPoints(ctx context.Context, dataPo
 			model.MetricNameLabel,
 			name,
 		)
-		timestamp := convertTimeStamp(pt.Timestamp())
+
 		sample := &prompb.Sample{
 			Timestamp: timestamp,
 		}
@@ -125,6 +127,7 @@ func (c *PrometheusConverter) addSumNumberDataPoints(ctx context.Context, dataPo
 			}
 			c.addTimeSeriesIfNeeded(createdLabels, startTimestampMs, pt.Timestamp())
 		}
+		c.trackStartTimestampForSeries(startTimestampMs, timestamp, lbls, logger)
 	}
 
 	return nil
