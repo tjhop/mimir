@@ -202,10 +202,17 @@ var Functions = map[string]*Function{
 		ArgTypes:   []ValueType{ValueTypeScalar, ValueTypeVector},
 		ReturnType: ValueTypeVector,
 	},
+	"double_exponential_smoothing": {
+		Name:         "double_exponential_smoothing",
+		ArgTypes:     []ValueType{ValueTypeMatrix, ValueTypeScalar, ValueTypeScalar},
+		ReturnType:   ValueTypeVector,
+		Experimental: true,
+	},
+	// Keep an alias for Mimir users using holt_winters.
 	"holt_winters": {
-		Name:       "holt_winters",
-		ArgTypes:   []ValueType{ValueTypeMatrix, ValueTypeScalar, ValueTypeScalar},
-		ReturnType: ValueTypeVector,
+		Name:         "holt_winters",
+		ArgTypes:     []ValueType{ValueTypeMatrix, ValueTypeScalar, ValueTypeScalar},
+		ReturnType:   ValueTypeVector,
 	},
 	"hour": {
 		Name:       "hour",
@@ -222,6 +229,13 @@ var Functions = map[string]*Function{
 		Name:       "increase",
 		ArgTypes:   []ValueType{ValueTypeMatrix},
 		ReturnType: ValueTypeVector,
+	},
+	"info": {
+		Name:         "info",
+		ArgTypes:     []ValueType{ValueTypeVector, ValueTypeVector},
+		ReturnType:   ValueTypeVector,
+		Experimental: true,
+		Variadic:     1,
 	},
 	"irate": {
 		Name:       "irate",

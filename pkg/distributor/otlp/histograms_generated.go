@@ -63,7 +63,6 @@ func (c *MimirConverter) addExponentialHistogramDataPoints(ctx context.Context, 
 			promName,
 		)
 		ts, _ := c.getOrCreateTimeSeries(lbls)
-
 		ts.Histograms = append(ts.Histograms, histogram)
 
 		exemplars, err := getPromExemplars[pmetric.ExponentialHistogramDataPoint](ctx, &c.everyN, pt)
@@ -76,8 +75,8 @@ func (c *MimirConverter) addExponentialHistogramDataPoints(ctx context.Context, 
 	return annots, nil
 }
 
-// exponentialToNativeHistogram translates OTel Exponential Histogram data point
-// to Prometheus Native Histogram.
+// exponentialToNativeHistogram translates an OTel Exponential Histogram data point
+// to a Prometheus Native Histogram.
 func exponentialToNativeHistogram(p pmetric.ExponentialHistogramDataPoint) (mimirpb.Histogram, annotations.Annotations, error) {
 	var annots annotations.Annotations
 	scale := p.Scale()
